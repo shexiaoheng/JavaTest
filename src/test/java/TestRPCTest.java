@@ -24,7 +24,7 @@ class TestRPCTest {
             int intBlockNumber = Integer.parseInt(strBlockNumber.substring(2), 16);
             System.out.println("response block number is " + strBlockNumber + "\n");
 
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 500; i++) {
                 int _intBlockNumber = intBlockNumber - i;
                 String _strBlockNumber = "0x" + Integer.toHexString(_intBlockNumber);
 
@@ -81,7 +81,7 @@ class TestRPCTest {
                 System.out.println("response transaction count is " + reBlockTxCountByNumber + "\n");
 
                 if (LOOP_TX) {
-                    for (int j = 0; j < 2; j++) {
+                    for (int j = 0; j < transactions.size(); j++) {
                         // eth_getTransactionByHash
                         System.out.println("call eth_getTransactionByHash");
                         String txHash = transactions.get(j).getAsString();
