@@ -24,14 +24,13 @@ class TestRPCTest {
             int intBlockNumber = Integer.parseInt(strBlockNumber.substring(2), 16);
             System.out.println("response block number is " + strBlockNumber + "\n");
 
-            for (int i = 0; i < 500; i++) {
+            for (int i = 0; i < 300; i++) {
                 int _intBlockNumber = intBlockNumber - i;
                 String _strBlockNumber = "0x" + Integer.toHexString(_intBlockNumber);
 
                 // eth_getBlockByNumber
-                System.out.println("call eth_getBlockByNumber");
+                System.out.println("call eth_getBlockByNumber params is " + _strBlockNumber);
                 JsonObject joBlockByNumber = rpc.execRpcMethod(rpc.getBlockByNumber(_strBlockNumber));
-                System.out.println(joBlockByNumber);
                 assert "2" .equals(joBlockByNumber.get("id").getAsString());
                 String reBlockNumberByNumber = joBlockByNumber.get("result").getAsJsonObject().get("number").getAsString();
                 assert _strBlockNumber.equals(reBlockNumberByNumber);
@@ -41,7 +40,7 @@ class TestRPCTest {
                         + "\nresponse block hash is" + reBlockHashByNumber + "\n");
 
                 // eth_getBlockByHash
-                System.out.println("call eth_getBlockByHash");
+                System.out.println("call eth_getBlockByHash params is " + reBlockHashByNumber);
                 JsonObject joBlockByHash = rpc.execRpcMethod(rpc.getBlockByHash(reBlockHashByNumber));
                 assert "3" .equals(joBlockByHash.get("id").getAsString());
                 String reBlockNumberByHash = joBlockByHash.get("result").getAsJsonObject().get("number").getAsString();
@@ -55,7 +54,7 @@ class TestRPCTest {
                 JsonArray transactions = joBlockByHash.get("result").getAsJsonObject().get("transactions").getAsJsonArray();
 
                 // eth_getTransactionCount
-                System.out.println("call eth_getTransactionCount");
+                System.out.println("call eth_getTransactionCount params is " + reMinerByHash + " | " + _strBlockNumber);
                 JsonObject joTxCount = rpc.execRpcMethod(rpc.getTransactionCount(reMinerByHash, _strBlockNumber));
                 System.out.println(joTxCount);
                 assert "4" .equals(joTxCount.get("id").getAsString());
@@ -63,7 +62,7 @@ class TestRPCTest {
                 System.out.println("response transaction count is " + reTxCount + "\n");
 
                 // eth_getBlockTransactionCountByHash
-                System.out.println("call eth_getBlockTransactionCountByHash");
+                System.out.println("call eth_getBlockTransactionCountByHash params is " + reBlockHashByNumber);
                 JsonObject joBlockTxCountByHash = rpc.execRpcMethod(rpc.getBlockTransactionCountByHash(reBlockHashByNumber));
                 assert "5" .equals(joBlockTxCountByHash.get("id").getAsString());
                 String reBlockTxCountByHash = joBlockTxCountByHash.get("result").getAsString();
@@ -72,7 +71,7 @@ class TestRPCTest {
                 System.out.println("response transaction count is " + reBlockTxCountByHash + "\n");
 
                 // eth_getBlockTransactionCountByNumber
-                System.out.println("call eth_getBlockTransactionCountByNumber");
+                System.out.println("call eth_getBlockTransactionCountByNumber params is " + reBlockNumberByNumber);
                 JsonObject joBlockTxCountByNumber = rpc.execRpcMethod(rpc.getBlockTransactionCountByNumber(reBlockNumberByNumber));
                 assert "6" .equals(joBlockTxCountByNumber.get("id").getAsString());
                 String reBlockTxCountByNumber = joBlockTxCountByNumber.get("result").getAsString();
@@ -82,9 +81,9 @@ class TestRPCTest {
 
                 if (LOOP_TX) {
                     for (int j = 0; j < transactions.size(); j++) {
-                        // eth_getTransactionByHash
-                        System.out.println("call eth_getTransactionByHash");
                         String txHash = transactions.get(j).getAsString();
+                        // eth_getTransactionByHash
+                        System.out.println("call eth_getTransactionByHash params is " + txHash);
                         JsonObject joTxByHash = rpc.execRpcMethod(rpc.getTransactionByHash(txHash));
                         assert "7" .equals(joTxByHash.get("id").getAsString());
                         String reTxHashByTxHash = joTxByHash.get("result").getAsJsonObject().get("hash").getAsString();
@@ -98,7 +97,8 @@ class TestRPCTest {
                         System.out.println("response transaction hash is " + reTxHashByTxHash + "\n");
 
                         // eth_getTransactionByBlockHashAndIndex
-                        System.out.println("call eth_getTransactionByBlockHashAndIndex");
+                        System.out.println("call eth_getTransactionByBlockHashAndIndex params is "
+                                + reBlockHashByNumber + " | 0x" + Integer.toHexString(j));
                         JsonObject joTxByBlockHash = rpc.execRpcMethod(rpc.getTransactionByBlockHashAndIndex
                                 (reBlockHashByNumber, "0x" + Integer.toHexString(j)));
                         assert "8" .equals(joTxByBlockHash.get("id").getAsString());
@@ -113,7 +113,8 @@ class TestRPCTest {
                         System.out.println("response transaction hash is " + reTxHashByBlockHash + "\n");
 
                         // eth_getTransactionByBlockNumberAndIndex
-                        System.out.println("call eth_getTransactionByBlockNumberAndIndex");
+                        System.out.println("call eth_getTransactionByBlockNumberAndIndex params is "
+                                + reBlockNumberByNumber + " | 0x" + Integer.toHexString(j));
                         JsonObject joTxByBlockNumber = rpc.execRpcMethod(rpc.getTransactionByBlockNumberAndIndex
                                 (reBlockNumberByNumber, "0x" + Integer.toHexString(j)));
                         assert "9" .equals(joTxByBlockNumber.get("id").getAsString());
@@ -128,7 +129,7 @@ class TestRPCTest {
                         System.out.println("response transaction hash is " + reTxHashByBlockNumber + "\n");
 
                         // eth_getTransactionReceipt
-                        System.out.println("call eth_getTransactionReceipt");
+                        System.out.println("call eth_getTransactionReceipt params is " + txHash);
                         JsonObject joTxReceipt = rpc.execRpcMethod(rpc.getTransactionReceipt(txHash));
                         assert "10" .equals(joTxReceipt.get("id").getAsString());
                         String reBlockHashByReceipt = joTxReceipt.get("result").getAsJsonObject().get("blockHash").getAsString();
@@ -142,9 +143,9 @@ class TestRPCTest {
                         System.out.println("response receipt hash is " + reTxHashByReceipt + "\n");
                     }
                 } else {
-                    // eth_getTransactionByHash
-                    System.out.println("call eth_getTransactionByHash");
                     String txHash = transactions.get(0).getAsString();
+                    // eth_getTransactionByHash
+                    System.out.println("call eth_getTransactionByHash params is " + txHash);
                     JsonObject joTxByHash = rpc.execRpcMethod(rpc.getTransactionByHash(txHash));
                     assert "7" .equals(joTxByHash.get("id").getAsString());
                     String reTxHashByTxHash = joTxByHash.get("result").getAsJsonObject().get("hash").getAsString();
@@ -158,7 +159,8 @@ class TestRPCTest {
                     System.out.println("response transaction hash is " + reTxHashByTxHash + "\n");
 
                     // eth_getTransactionByBlockHashAndIndex
-                    System.out.println("call eth_getTransactionByBlockHashAndIndex");
+                    System.out.println("call eth_getTransactionByBlockHashAndIndex params is "
+                            + reBlockHashByNumber + " | 0x" + Integer.toHexString(0));
                     JsonObject joTxByBlockHash = rpc.execRpcMethod(rpc.getTransactionByBlockHashAndIndex
                             (reBlockHashByNumber, "0x" + Integer.toHexString(0)));
                     assert "8" .equals(joTxByBlockHash.get("id").getAsString());
@@ -173,7 +175,8 @@ class TestRPCTest {
                     System.out.println("response transaction hash is " + reTxHashByBlockHash + "\n");
 
                     // eth_getTransactionByBlockNumberAndIndex
-                    System.out.println("call eth_getTransactionByBlockNumberAndIndex");
+                    System.out.println("call eth_getTransactionByBlockNumberAndIndex params is "
+                            + reBlockNumberByNumber + " | 0x" + Integer.toHexString(0));
                     JsonObject joTxByBlockNumber = rpc.execRpcMethod(rpc.getTransactionByBlockNumberAndIndex
                             (reBlockNumberByNumber, "0x" + Integer.toHexString(0)));
                     assert "9" .equals(joTxByBlockNumber.get("id").getAsString());
@@ -188,7 +191,7 @@ class TestRPCTest {
                     System.out.println("response transaction hash is " + reTxHashByBlockNumber + "\n");
 
                     // eth_getTransactionReceipt
-                    System.out.println("call eth_getTransactionReceipt");
+                    System.out.println("call eth_getTransactionReceipt params is " + txHash);
                     JsonObject joTxReceipt = rpc.execRpcMethod(rpc.getTransactionReceipt(txHash));
                     assert "10" .equals(joTxReceipt.get("id").getAsString());
                     String reBlockHashByReceipt = joTxReceipt.get("result").getAsJsonObject().get("blockHash").getAsString();
@@ -206,7 +209,7 @@ class TestRPCTest {
 
                 if (unclesArray.size() > 0) {
                     // eth_getUncleCountByBlockHash
-                    System.out.println("call eth_getUncleCountByBlockHash");
+                    System.out.println("call eth_getUncleCountByBlockHash params is " + reBlockHashByNumber);
                     JsonObject joUncleCountByHash = rpc.execRpcMethod(rpc.getUncleCountByBlockHash(reBlockHashByNumber));
                     assert "11" .equals(joUncleCountByHash.get("id").getAsString());
                     String reUncleCountByHash = joUncleCountByHash.get("result").getAsString();
@@ -214,7 +217,7 @@ class TestRPCTest {
                     System.out.println("response uncle count is " + reUncleCountByHash + "\n");
 
                     // eth_getUncleCountByBlockNumber
-                    System.out.println("call eth_getUncleCountByBlockNumber");
+                    System.out.println("call eth_getUncleCountByBlockNumber params is " + reBlockNumberByNumber);
                     JsonObject joUncleCountByNumber = rpc.execRpcMethod(rpc.getUncleCountByBlockNumber(reBlockNumberByNumber));
                     assert "12" .equals(joUncleCountByNumber.get("id").getAsString());
                     String reUncleCountByNumber = joUncleCountByNumber.get("result").getAsString();
@@ -224,7 +227,8 @@ class TestRPCTest {
                     if (LOOP_UNCLES) {
                         for (int j = 0; j < unclesArray.size(); j++) {
                             // eth_getUncleByBlockHashAndIndex
-                            System.out.println("call eth_getUncleByBlockHashAndIndex");
+                            System.out.println("call eth_getUncleByBlockHashAndIndex params is "
+                                    + reBlockHashByNumber + " | 0x" + Integer.toHexString(j));
                             JsonObject joUncleByHashAndIndex = rpc.execRpcMethod(rpc.getUncleByBlockHashAndIndex
                                     (reBlockHashByNumber, "0x" + Integer.toHexString(j)));
                             assert "13" .equals(joUncleByHashAndIndex.get("id").getAsString());
@@ -234,7 +238,8 @@ class TestRPCTest {
                             System.out.println("response uncle hash is " + reUncleHashByHash + "\n");
 
                             // eth_getUncleByBlockNumberAndIndex
-                            System.out.println("call eth_getUncleByBlockNumberAndIndex");
+                            System.out.println("call eth_getUncleByBlockNumberAndIndex params is "
+                                    + reBlockNumberByNumber + " | 0x" + Integer.toHexString(j));
                             JsonObject joUncleByNumberAndIndex = rpc.execRpcMethod(rpc.getUncleByBlockNumberAndIndex
                                     (reBlockNumberByNumber, "0x" + Integer.toHexString(j)));
                             assert "14" .equals(joUncleByNumberAndIndex.get("id").getAsString());
@@ -245,7 +250,8 @@ class TestRPCTest {
                         }
                     } else {
                         // eth_getUncleByBlockHashAndIndex
-                        System.out.println("call eth_getUncleByBlockHashAndIndex");
+                        System.out.println("call eth_getUncleByBlockHashAndIndex params is "
+                                + reBlockHashByNumber + " | 0x" + Integer.toHexString(0));
                         JsonObject joUncleByHashAndIndex = rpc.execRpcMethod(rpc.getUncleByBlockHashAndIndex
                                 (reBlockHashByNumber, "0x" + Integer.toHexString(0)));
                         assert "13" .equals(joUncleByHashAndIndex.get("id").getAsString());
@@ -255,7 +261,8 @@ class TestRPCTest {
                         System.out.println("response uncle hash is " + reUncleHashByHash + "\n");
 
                         // eth_getUncleByBlockNumberAndIndex
-                        System.out.println("call eth_getUncleByBlockNumberAndIndex");
+                        System.out.println("call eth_getUncleByBlockNumberAndIndex params is "
+                                + reBlockNumberByNumber + " | 0x" + Integer.toHexString(0));
                         JsonObject joUncleByNumberAndIndex = rpc.execRpcMethod(rpc.getUncleByBlockNumberAndIndex
                                 (reBlockNumberByNumber, "0x" + Integer.toHexString(0)));
                         assert "14" .equals(joUncleByNumberAndIndex.get("id").getAsString());
@@ -267,7 +274,7 @@ class TestRPCTest {
                 }
 
                 // eth_call
-                System.out.println("call eth_call");
+                System.out.println("call eth_call params is " + reMinerByHash + " | " + _strBlockNumber);
                 JsonObject joCall = rpc.execRpcMethod(rpc.call(reMinerByHash, _strBlockNumber));
                 assert "15" .equals(joCall.get("id").getAsString());
                 String result = joCall.get("result").getAsString();
