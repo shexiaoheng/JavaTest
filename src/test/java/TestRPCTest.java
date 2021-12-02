@@ -26,7 +26,7 @@ class TestRPCTest {
             int intBlockNumber = Integer.parseInt(strBlockNumber.substring(2), 16);
             System.out.println("response block number is " + strBlockNumber + "\n");
 
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 100; i++) {
                 int _intBlockNumber = intBlockNumber - i;
                 String _strBlockNumber = "0x" + Integer.toHexString(_intBlockNumber);
 
