@@ -15,6 +15,61 @@ public class TestRPC {
         this.url = url;
     }
 
+    public void sysAssertEquals(String expect, String real) {
+        System.out.println("assert\t" + expect + "equals\t" + real);
+        assert expect.equals(real);
+    }
+
+    public void sysAssertEquals(int expect, int real) {
+        System.out.println("assert\t" + expect + " == " + real);
+        assert expect == real;
+    }
+
+    public void sysParams(String id, String method) {
+        String builder = "params is " +
+                "{\"jsonrpc\":\"2.0\",\"id\":\"" + id +
+                "\",\"method\":\"" + method +
+                "\"}";
+        System.out.println(builder);
+    }
+
+    public void sysParams(String id, String method, String params) {
+        String builder = "params is " +
+                "{\"jsonrpc\":\"2.0\",\"id\":\"" + id +
+                "\",\"method\":\"" + method +
+                "\",\"params\":" +
+                "[\"" +
+                params +
+                "\"]}";
+        System.out.println(builder);
+    }
+
+    public void sysParams(String id, String method, String params1, boolean params2) {
+        String builder = "params is " +
+                "{\"jsonrpc\":\"2.0\",\"id\":\"" + id +
+                "\",\"method\":\"" + method +
+                "\",\"params\":" +
+                "[\"" +
+                params1 +
+                "\"," +
+                params2 +
+                "]}";
+        System.out.println(builder);
+    }
+
+    public void sysParams(String id, String method, String params1, String params2) {
+        String builder = "params is " +
+                "{\"jsonrpc\":\"2.0\",\"id\":\"" + id +
+                "\",\"method\":\"" + method +
+                "\",\"params\":" +
+                "[\"" +
+                params1 +
+                "\",\"" +
+                params2 +
+                "\"]}";
+        System.out.println(builder);
+    }
+
     public RequestBody blockNumber() {
         List<Object> params = new ArrayList<>();
         return createReqBody("1", "eth_blockNumber", params);
@@ -34,7 +89,7 @@ public class TestRPC {
         return createReqBody("3", "eth_getBlockByHash", params);
     }
 
-    public RequestBody getTransactionCount(String miner,String blockNumber) {
+    public RequestBody getTransactionCount(String miner, String blockNumber) {
         List<Object> params = new ArrayList<>();
         params.add(miner);
         params.add(blockNumber);
@@ -108,7 +163,7 @@ public class TestRPC {
     public RequestBody call(String toAddress, String blockNumber) {
         List<Object> params = new ArrayList<>();
         JsonObject object = new JsonObject();
-        object.addProperty("to",toAddress);
+        object.addProperty("to", toAddress);
         params.add(object);
         params.add(blockNumber);
         return createReqBody("15", "eth_call", params);
